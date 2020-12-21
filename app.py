@@ -1,5 +1,4 @@
-from flask import Flask, request, json
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request
 from flask_pymongo import PyMongo
 from Constants import UrlConstants as cons
 from Services import FetchAllRecordsService as fetchService
@@ -13,9 +12,6 @@ from flask_swagger_ui import get_swaggerui_blueprint
 
 app = Flask(__name__)
 constants = cons.UrlConstants()
-# yml = yaml.load(open("app.yaml"))
-# application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-# application.config['SQLALCHEMY_DATABASE_URI'] = constants.DATABASE_URL
 app.config["MONGO_URI"] = constants.DATABASE_URL
 mongo = PyMongo(app)
 fetch_all_rec_ser = fetchService.FetchAllRecordsService()
@@ -37,9 +33,14 @@ SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
 app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=swagger_uri)
 
 
-@app.route('/test', methods=['GET'])
+@app.route('/', methods=['GET'])
 def home_page():
-    return 'working'
+    return 'Please add swagger in path to get swagger'
+
+
+@app.route('/test', methods=['GET'])
+def for_testing():
+    return 'Working'
 
 
 @app.route('/search/<string:_query>', methods=[constants.GET])
