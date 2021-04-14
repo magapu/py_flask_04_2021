@@ -1,4 +1,5 @@
-from flask import Flask, request
+from flask import Flask, request, make_response
+from flask_login import login_required
 from flask_pymongo import PyMongo
 from Constants import UrlConstants as cons
 from Services import FetchAllRecordsService as fetchService
@@ -9,6 +10,7 @@ from Services import LoginService as loginService
 from Services import DupCheckForEmailId as dupCheck
 from Services import ElasticSearchService as elasticSearch
 from flask_swagger_ui import get_swaggerui_blueprint
+from Services import ChatBotService as chatBotService
 
 app = Flask(__name__)
 constants = cons.UrlConstants()
@@ -39,8 +41,9 @@ def home_page():
 
 
 @app.route('/test', methods=['GET'])
+@cross_origin()
 def for_testing():
-    return 'Working'
+    return 'working'
 
 
 @app.route('/search/<string:_query>', methods=[constants.GET])
@@ -97,6 +100,12 @@ def user_details():
 def fetch_all_records():
     if request.method == constants.GET:
         return fetch_all_rec_ser.fetch_all_records_from_db()
+
+
+@app.route("/ChatBot/<string:botReq>", methods=[constants.GET])
+@cross_origin()
+def get_bot_response(botReq):
+    return chatBotService.return_bot_res(botReq)
 
 
 if __name__ == '__main__':
